@@ -1,0 +1,53 @@
+Initial setup was with flightradar24.com (FR24) and their Pi24 image for the microSD card.
+This radar is T-KGNV16
+It was first online at 3:06 UTC, 6 November 2021.
+My GPS position is recorded for FR24 as: 29.5844,-82.4325
+It's running pi24 software version 1.0.28-1
+
+At activation, the FR24 standings include F-KGNV1 and T-KGNV5, 9, 13, 14, 15
+
+To see the planes detected by my Raspberry Pi:
+1) Go to https://www.flightradar24.com/multiview/29.69,-82.27/9
+	In Filters, select "Radar". Type "T-KGNV16".
+	In Bookmarks, select Pi
+
+2) Go to http://192.168.0.13/dump1090/gmap.html
+
+3) Go to http://192.168.0.13/tar1090/
+	tar1090 is an add-on program I downloaded.
+	The code can be found at https://github.com/wiedehopf/tar1090
+	This page acts like the dump1090 page (#2 option above), but with customizable settings.
+	- My location is shown via the circle marker.
+	- Range rings every 50nm are shown out to 250nm.
+	- The theoretical maximum visibility of a 1090 MHz antenna from my location, 
+		15ft above ground, is show via a blue line. The blue line 
+		represents how far I should be able to see planes
+		15,000 ft above sea level. This is set with this command,
+		where RH6HG78X is an ID for my location and 4752 is 15000ft in meters.
+		sudo /usr/local/share/tar1090/getupintheair.sh RH6HG78X 4752
+	- I updated teh buttons at the top to include Low, High, Change, and Circling options.
+		- Low: Show tracks of all planes currently under 10kft.
+		- High: Show tracks of all planes currently above 30kft and whose initial and current altitudes are within 4kft of each other.
+		- Change: Show tracks of all planes who are currently changing altitude by at least 1000 ft per minute or whose initial and current altitudes are more then 2kft apart.
+		- Circling: Should identify planes whose track intersects itself because the plane turned around. 
+	- I have the table sorted by altitude, while keeping Mode-S at the bottom. See line 1398 and 6009 in script_980d173.js
+	The configuration file is at sudo nano /usr/local/share/tar1090/html/config.js
+	To get the speed column to work, I had to go to 
+		/usr/local/share/tar1090/html/planeObject_980d173.js, line 1245 and 
+		replace data.gs with data.speed.
+	If something breaks, remove the config.js file and it will be replaced with 
+		default values.
+	The theoretical maximum visibility lines were aquired through www.heywhatsthat.com,
+		following the directions on the tar1090 github page.
+
+To see the last 8 hours of flights seen with my Pi, 
+go to http://192.168.0.13/tar1090/?pTracks
+	The configuration for this page has also been customized through
+		sudo nano /etc/default/tar1090
+	To apply the configuration: sudo systemctl restart tar1090
+
+Trying to change the tar1090 "show all tracks" options.
+	usr/local/share/tar1090/html/index.html: line 732
+	usr/local/share/tar1090/html/planeObject_980d173.js: line 1530-1554, 1757
+		See function PlaneObject.prototype.updateFeatures
+	usr/local/share/tar1090/html/script_980d173.js: lines 38, 3680, 3741-3955
