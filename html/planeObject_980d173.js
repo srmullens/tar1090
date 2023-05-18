@@ -1584,7 +1584,6 @@ PlaneObject.prototype.updateFeatures = function(redraw) {
 			this.updateLines();
 	        }
 	    } else if (SelectedCirclingPlanes) {
-		//if (this.icao=='a72c78') { console.log(seg_coords); }
 		let circling = false;
 		let linesegs = this.track_linesegs;
 
@@ -1596,17 +1595,16 @@ PlaneObject.prototype.updateFeatures = function(redraw) {
 			else {
 		            let sel = linesegs[i];
 		            // Time between segments should be less than 10 minutes.
-			    //console.log(i+1,i,linesegs[i+1].ts-sel.ts);
 		            if ((linesegs[i+1].ts - sel.ts) > 600) { break; }
 			    let seg_past = linesegs[i]['fixed']['flatCoordinates'];
+			    // Determine if two line segments of a track intersect.
 			    for (let j = i+2; j <= linesegs.length-1; j++) {
 			        let seg_later = linesegs[j]['fixed']['flatCoordinates'];
 			        circling = intersects(seg_past[0],seg_past[1],seg_past[2],seg_past[3],
 				                      seg_later[0],seg_later[1],seg_later[2],seg_later[3]);
 			    
-			        //console.log('j:',i,j,circling); 
 			        if (circling) {
-			            console.log('CIRCLING',this.flight); //,seg_past,seg_later);
+			            //console.log('CIRCLING',this.flight);
 				    this.updateLines();
 				    break;
 			        }
