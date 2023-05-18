@@ -22,8 +22,8 @@ DisplayUnits = "nautical";
 // degrees.
 
 // Default center of the map.
-DefaultCenterLat = 29.5844;
-DefaultCenterLon = -82.4325;
+DefaultCenterLat = 40.56;
+DefaultCenterLon = -73.66;
 // The google maps zoom level, 0 - 16, lower is further out
 DefaultZoomLvl   = 8;
 
@@ -31,8 +31,8 @@ DefaultZoomLvl   = 8;
 // that location is used and these settings are ignored.
 
 SiteShow    = true;           // true to show a center marker
-SiteLat     = 29.5844;            // position of the marker
-SiteLon     = -82.4325;
+SiteLat     = 40.56;            // position of the marker
+SiteLon     = -73.66;
 //SiteName    = "My Radar Site"; // tooltip of the marker
 
 // Color controls for the range outline
