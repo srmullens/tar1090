@@ -1528,7 +1528,6 @@ PlaneObject.prototype.updateFeatures = function(redraw) {
     if (this.visible) {
         if (this.drawLine || redraw || this.lastVisible != this.visible)
 	    if (SelectedLowPlanes) {
-		//if (this.icao=='ad9293') { console.log(this.track_linesegs); }
 		// Find the minAlt in this flight's path
 		let minAlt = 999999;
 		for (let i = this.track_linesegs.length-1; i >= 1; i--) {
@@ -1540,7 +1539,7 @@ PlaneObject.prototype.updateFeatures = function(redraw) {
 		}
 		// Show entire track if altitude is or was below 10,000 feet.
 		// Don't stop a track just because the plane climbed above the threshold.
-	        if (this.altitude<15000 || minAlt<15000) {
+	        if (this.altitude<10000 || minAlt<10000) {
                     this.updateLines();
 		}
 	    } else if (SelectedHighPlanes) {
@@ -1559,7 +1558,7 @@ PlaneObject.prototype.updateFeatures = function(redraw) {
 		    }
 		}
 		if (this.altitude>30000 && 
-	           (Math.abs(this.altitude - minAlt) <= 4000)) {
+	           (Math.abs(maxAlt - minAlt) <= 4000)) {
 			this.updateLines();
 	        }
 
@@ -1568,16 +1567,20 @@ PlaneObject.prototype.updateFeatures = function(redraw) {
 
 		// Find the minAlt in this flight's path
 		let minAlt = 999999;
+		let maxAlt = 0;
 		for (let i = this.track_linesegs.length-1; i >= 1; i--) {
 		    let sel = this.track_linesegs[i];
 		    // Time between segments should be less than 10 minutes.
 		    if ((sel.ts - this.track_linesegs[i-1].ts) > 600) { break; }
-		    // Record minimum altitude
-		    else { minAlt = sel.altitude<minAlt ? sel.altitude : minAlt; }
+		    // Record minimum and maximum altitude
+		    else {
+			minAlt = sel.altitude<minAlt ? sel.altitude : minAlt;
+		        maxAlt = sel.altitude>maxAlt ? sel.altitude : maxAlt;
+		    }
 		}
 		if (Math.abs(this.vert_rate)>1000) {
 			this.updateLines();
-		} else if (Math.abs(this.altitude - minAlt) > 2000) {
+		} else if (Math.abs(maxAlt - minAlt) > 4000) {
 			this.updateLines();
 	        }
 	    } else if (SelectedCirclingPlanes) {
